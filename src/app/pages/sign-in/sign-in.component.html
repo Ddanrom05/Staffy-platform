@@ -1,0 +1,82 @@
+<div class="auth-container">
+  <div class="auth-left">
+    <div class="logo">
+      <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="50" height="50" rx="12" fill="white"/>
+        <path d="M25 15C19.477 15 15 19.477 15 25C15 30.523 19.477 35 25 35C30.523 35 35 30.523 35 25C35 19.477 30.523 15 25 15ZM25 32C20.589 32 17 28.411 17 25C17 21.589 20.589 18 25 18C29.411 18 33 21.589 33 25C33 28.411 29.411 32 25 32Z" fill="#8B5CF6"/>
+        <path d="M26 22H24V26H20V28H24V32H26V28H30V26H26V22Z" fill="#8B5CF6"/>
+      </svg>
+      <span>Staffy</span>
+    </div>
+
+    <div class="auth-content">
+      <h1>Haz la diferencia, un turno a la vez</h1>
+      <p>Conecta con oportunidades de voluntariado que coincidan con tu pasión y habilidades. Únete a miles de voluntarios que generan impacto en sus comunidades.</p>
+    </div>
+
+    <footer class="auth-footer">
+      <p>© 2026 Staffy. Impulsando comunidades a través del voluntariado.</p>
+    </footer>
+  </div>
+
+  <div class="auth-right">
+    <div class="form-container">
+      <div class="form-header">
+        <h2>Bienvenido de nuevo</h2>
+        <p>Ingresa tus credenciales para acceder a tu cuenta</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="auth-form">
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="tu@correo.com"
+            [(ngModel)]="email"
+            name="email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <div class="password-header">
+            <label for="password">Contraseña</label>
+            <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+          </div>
+          <div class="password-input-wrapper">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              placeholder="••••••••"
+              [(ngModel)]="password"
+              name="password"
+              required
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="togglePasswordVisibility()"
+            >
+              <svg *ngIf="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg *ngIf="showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Iniciar sesión</button>
+      </form>
+
+      <div class="form-footer">
+        <span>¿No tienes una cuenta? </span>
+        <a [routerLink]="['/sign-up']">Regístrate</a>
+      </div>
+    </div>
+  </div>
+</div>

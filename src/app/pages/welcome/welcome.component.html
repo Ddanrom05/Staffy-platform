@@ -1,0 +1,97 @@
+<div class="welcome-page">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Find Your Next Volunteering Opportunity</h1>
+      <p>Make a difference in your community. Browse opportunities that match your passion and availability.</p>
+      
+      <div class="search-bar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" placeholder="Search by title, organization, or location..." [(ngModel)]="searchQuery">
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="opportunities-container">
+    <!-- Categories Section (Top) -->
+    <div class="categories-section-top">
+      <div class="categories-header">
+        <i class="fas fa-filter"></i>
+        <h2>Categories</h2>
+      </div>
+      <div class="category-tags">
+        <button 
+          *ngFor="let category of categories" 
+          class="category-tag"
+          [class.active]="selectedCategory() === category"
+          (click)="selectCategory(category)">
+          {{ category }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Sidebar (Desktop) -->
+    <aside class="sidebar"></aside>
+
+    <!-- Opportunities Grid -->
+    <section class="opportunities-main">
+      <div class="opportunities-header">
+        <p>Showing {{ opportunities.length }} opportunities</p>
+        <select class="sort-select">
+          <option>Recommended</option>
+          <option>Recently Added</option>
+          <option>Closest to Me</option>
+        </select>
+      </div>
+
+      <!-- Opportunities Grid -->
+      <div class="opportunities-grid">
+        <div *ngFor="let opp of opportunities" class="opportunity-card">
+          <div class="card-image">
+            <img [src]="opp.image" [alt]="opp.title">
+            <span *ngIf="opp.urgent" class="urgent-badge">Urgent</span>
+            <button class="favorite-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="card-content">
+            <h3>{{ opp.title }}</h3>
+            <p class="organization">{{ opp.organization }}</p>
+            
+            <div class="card-info">
+              <div class="info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                {{ opp.location }}
+              </div>
+              
+              <div class="info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                {{ opp.date }}
+              </div>
+              
+              <div class="info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 11H3v2h6v-2zm0-4H3v2h6V7zm6 0v2h6V7h-6zm0 4v2h6v-2h-6zM9 3H3v2h6V3zm6 0v2h6V3h-6z"/>
+                </svg>
+                {{ opp.hours }}
+              </div>
+            </div>
+            
+            <button class="apply-btn">Apply Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
