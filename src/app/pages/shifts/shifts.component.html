@@ -1,0 +1,181 @@
+<div class="shifts-page">
+  <!-- Stats Section -->
+  <div class="stats-section">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Hours This Month</span>
+        <span class="stat-value">{{ hoursThisMonth }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-calendar-alt"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Upcoming Shifts</span>
+        <span class="stat-value">{{ upcomingShifts.length }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-hourglass-end"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Total Hours</span>
+        <span class="stat-value">{{ totalHours }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Completed Shifts</span>
+        <span class="stat-value">{{ completedShifts.length }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="shifts-container">
+    <!-- Left Column - Upcoming Shifts -->
+    <section class="shifts-main">
+      <div class="section-header">
+        <h2>Upcoming Shifts</h2>
+        <a routerLink="/opportunities" class="browse-link">Browse More</a>
+      </div>
+
+      <!-- Upcoming Shifts List -->
+      <div class="shifts-list">
+        <div *ngFor="let shift of upcomingShifts" class="shift-item">
+          <div class="shift-icon" [ngClass]="shift.category ? 'category-' + shift.category.toLowerCase().replace(/\s+/g, '-') : ''">
+            <i [class]="getCategoryIcon(shift.category)"></i>
+          </div>
+
+          <div class="shift-info">
+            <div class="shift-header-row">
+              <div>
+                <h3>{{ shift.title }}</h3>
+                <p class="organization">{{ shift.organization }}</p>
+              </div>
+              <span *ngIf="shift.confirmed" class="confirmed-badge">
+                <i class="fas fa-check-circle"></i>
+                Confirmed
+              </span>
+            </div>
+
+            <div class="shift-details">
+              <div class="detail">
+                <i class="fas fa-calendar-alt"></i>
+                {{ shift.date }}
+              </div>
+              <div class="detail">
+                <i class="fas fa-clock"></i>
+                {{ shift.startTime }}
+              </div>
+              <div class="detail">
+                <i class="fas fa-map-marker-alt"></i>
+                {{ shift.location }}
+              </div>
+            </div>
+          </div>
+
+          <div class="shift-action">
+            <button class="btn-details">
+              View Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column - Milestone + Quick Actions -->
+    <aside class="sidebar">
+      <!-- Milestone Card -->
+      <div class="milestone-card">
+        <div class="milestone-icon">
+          <i class="fas fa-award"></i>
+        </div>
+        <h3>{{ totalHours }} Hours Milestone</h3>
+        <p>You're so close! Just 27 more hours to go.</p>
+        
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="hoursProgress()"></div>
+        </div>
+        <span class="progress-text">{{ hoursProgress() }}% complete</span>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <h3>Quick Actions</h3>
+        <a routerLink="/opportunities" class="action-item">
+          <i class="fas fa-search"></i>
+          Browse Opportunities
+        </a>
+        <button class="action-item" type="button">
+          <i class="fas fa-badge"></i>
+          View My Badges
+        </button>
+        <button class="action-item" type="button">
+          <i class="fas fa-calendar"></i>
+          My Calendar
+        </button>
+      </div>
+
+      <!-- This Month Stats -->
+      <div class="monthly-stats">
+        <h3>This Month</h3>
+        
+        <div class="stat-row">
+          <span class="stat-name">Hours Goal</span>
+          <span class="stat-value">12/15</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill purple" [style.width]="'80%'"></div>
+        </div>
+
+        <div class="stat-row">
+          <span class="stat-name">Shifts Goal</span>
+          <span class="stat-value">3/4</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill green" [style.width]="'75%'"></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Recent Applications Section -->
+  <div class="recent-applications">
+    <h2>Recent Applications</h2>
+    <div class="applications-grid">
+      <div class="application-card">
+        <div class="app-icon pending">
+          <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div class="app-content">
+          <h3>Community Garden Project</h3>
+          <p>Green Thumbs Collective</p>
+          <span class="app-status pending">Pending</span>
+        </div>
+      </div>
+
+      <div class="application-card">
+        <div class="app-icon pending">
+          <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div class="app-content">
+          <h3>Senior Care Companion</h3>
+          <p>Golden Years Foundation</p>
+          <span class="app-status pending">Pending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

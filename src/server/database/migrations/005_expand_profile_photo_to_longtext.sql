@@ -1,0 +1,2 @@
+ALTER TABLE user_profiles
+  MODIFY COLUMN photo_url LONGTEXT NULL;

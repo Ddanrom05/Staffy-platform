@@ -1,0 +1,273 @@
+<div class="profile-page">
+  <div class="profile-container">
+    <aside class="profile-sidebar-column">
+      <section class="profile-sidebar">
+        <div class="avatar-section">
+          <img
+            *ngIf="userProfile().photoUrl"
+            class="avatar-image"
+            [src]="userProfile().photoUrl"
+            alt="Foto de perfil"
+          />
+          <div *ngIf="!userProfile().photoUrl" class="avatar">{{ userProfile().initials }}</div>
+          <h1>{{ userProfile().name }}</h1>
+          <p class="member-since" *ngIf="userProfile().memberSince">Miembro desde {{ userProfile().memberSince }}</p>
+        </div>
+
+        <div class="info-section">
+          <div class="info-item">
+            <i class="fas fa-envelope"></i>
+            <div class="info-content">
+              <label>Email</label>
+              <span>{{ userProfile().email }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-phone"></i>
+            <div class="info-content">
+              <label>Teléfono</label>
+              <span>{{ userProfile().phone || 'Completa tu teléfono en Editar perfil' }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="info-content">
+              <label>Ubicación</label>
+              <span>{{ userProfile().location || 'Completa tu ubicación en Editar perfil' }}</span>
+            </div>
+          </div>
+          <div class="info-item bio-item">
+            <label>Biografía</label>
+            <p>{{ userProfile().bio || 'Agrega una biografía desde Editar perfil' }}</p>
+          </div>
+        </div>
+
+        <button class="edit-profile-btn" (click)="toggleEditProfile()" [disabled]="isSavingProfile()">
+          <i class="fas fa-edit"></i>
+          Editar perfil
+        </button>
+
+        <p class="profile-error" *ngIf="profileError()">{{ profileError() }}</p>
+      </section>
+
+      <section class="impact-summary-card">
+        <h3>Resumen de impacto</h3>
+
+        <div class="impact-item">
+          <div class="impact-label">
+            <i class="fas fa-clock"></i>
+            <span>Horas totales</span>
+          </div>
+          <span class="impact-value">{{ totalHours }}</span>
+        </div>
+
+        <div class="impact-item">
+          <div class="impact-label">
+            <i class="fas fa-heart"></i>
+            <span>Oportunidades</span>
+          </div>
+          <span class="impact-value">{{ totalOpportunities }}</span>
+        </div>
+
+        <div class="impact-item">
+          <div class="impact-label">
+            <i class="fas fa-user"></i>
+            <span>Organizaciones</span>
+          </div>
+          <span class="impact-value">{{ totalOrganizations }}</span>
+        </div>
+      </section>
+    </aside>
+
+    <main class="profile-main">
+      <div class="tabs-container">
+        <button 
+          class="tab" 
+          [class.active]="activeTab() === 'activity'"
+          (click)="selectTab('activity')">
+          Resumen
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="activeTab() === 'skills'"
+          (click)="selectTab('skills')">
+          Habilidades
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="activeTab() === 'badges'"
+          (click)="selectTab('badges')">
+          Insignias
+        </button>
+      </div>
+
+      <div *ngIf="activeTab() === 'activity'" class="tab-content">
+        <h2>Historial de voluntariado</h2>
+        <table class="data-table" *ngIf="activities.length > 0; else noActivities">
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Organización</th>
+              <th>Fecha</th>
+              <th>Horas</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let activity of activities">
+              <td>{{ activity.title }}</td>
+              <td>{{ activity.organization }}</td>
+              <td>{{ activity.date }}</td>
+              <td>{{ activity.hours }}</td>
+              <td>{{ activity.status === 'completado' ? 'Completado' : 'Próximo' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #noActivities>
+          <p class="empty-state">Aún no hay historial de voluntariado.</p>
+        </ng-template>
+      </div>
+
+      <div *ngIf="activeTab() === 'skills'" class="tab-content">
+        <div class="skills-header">
+          <h2>Habilidades</h2>
+          <button type="button" class="edit-skills-btn" (click)="toggleSkillsEditor()">
+            <i class="fas fa-pen"></i>
+            {{ isEditingSkills() ? 'Cerrar edición' : 'Editar habilidades' }}
+          </button>
+        </div>
+
+        <div class="skills-list" *ngIf="skills.length > 0; else noSkills">
+          <button
+            type="button"
+            class="skill-chip"
+            *ngFor="let skill of skills"
+            (click)="isEditingSkills() ? removeSkill(skill) : null"
+            [class.removable]="isEditingSkills()"
+            [attr.aria-label]="isEditingSkills() ? 'Eliminar ' + skill : skill"
+          >
+            <span>{{ skill }}</span>
+            <i *ngIf="isEditingSkills()" class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="skills-editor" *ngIf="isEditingSkills()">
+          <label for="newSkill">Agregar habilidad</label>
+          <div class="skills-editor-row">
+            <input
+              id="newSkill"
+              type="text"
+              placeholder="Escribe una habilidad"
+              [(ngModel)]="newSkill"
+              (keydown.enter)="$event.preventDefault(); addSkill()"
+            />
+            <button type="button" class="skill-add-btn" (click)="addSkill()">
+              <i class="fas fa-plus"></i>
+              Agregar
+            </button>
+          </div>
+          <p class="skills-editor-hint">Haz clic en una habilidad para eliminarla.</p>
+        </div>
+
+        <ng-template #noSkills>
+          <p class="empty-state">Aún no has agregado habilidades. Usa “Editar habilidades” para comenzar.</p>
+        </ng-template>
+      </div>
+
+      <div *ngIf="activeTab() === 'badges'" class="tab-content">
+        <h2>Insignias</h2>
+        <table class="data-table" *ngIf="badges.length > 0; else noBadges">
+          <thead>
+            <tr>
+              <th>Insignia</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let badge of badges">
+              <td>{{ badge.name }}</td>
+              <td>{{ badge.status === 'earned' ? 'Obtenido' : 'Bloqueado' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #noBadges>
+          <p class="empty-state">Aún no hay insignias registradas.</p>
+        </ng-template>
+      </div>
+    </main>
+  </div>
+
+  <div
+    *ngIf="isEditingProfile()"
+    (click)="cancelEditProfile()"
+    style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); z-index: 120;"
+  ></div>
+
+  <div
+    *ngIf="isEditingProfile()"
+    (click)="$event.stopPropagation()"
+    style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(92vw, 560px); max-height: 88vh; overflow: auto; background: #fff; border-radius: 12px; padding: 20px; z-index: 121; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3);"
+  >
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <h3 style="margin:0; font-size:1.1rem; color:#1f2937;">Editar perfil</h3>
+      <button
+        type="button"
+        (click)="cancelEditProfile()"
+        style="border:none; background:transparent; color:#6b7280; cursor:pointer; font-size:1.2rem;"
+      >
+        ×
+      </button>
+    </div>
+
+    <form class="edit-profile-form" (ngSubmit)="saveProfile()">
+      <label for="profilePhoto">Foto de perfil</label>
+      <input
+        id="profilePhoto"
+        name="profilePhoto"
+        type="file"
+        accept="image/*"
+        (change)="onPhotoSelected($event)"
+      />
+
+      <div *ngIf="editableProfile.photoUrl" style="display:flex; align-items:center; gap:10px;">
+        <img
+          [src]="editableProfile.photoUrl"
+          alt="Previsualización"
+          style="width:64px; height:64px; border-radius:50%; object-fit:cover; border:1px solid #e5e7eb;"
+        />
+        <button type="button" (click)="removeSelectedPhoto()" class="save-profile-btn" style="padding:8px 10px; margin-top:0; background:#ef4444;">
+          Quitar foto
+        </button>
+      </div>
+
+      <label for="phone">Teléfono</label>
+      <input id="phone" name="phone" type="text" [(ngModel)]="editableProfile.phone" />
+
+      <label>País</label>
+      <input type="text" [value]="forcedCountry" disabled style="border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font-size: 0.9rem; color: #1f2937; background:#f3f4f6;" />
+
+      <label for="state">Estado / Región</label>
+      <select
+        id="state"
+        name="state"
+        [(ngModel)]="selectedState"
+        style="border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font-size: 0.9rem; color: #1f2937;"
+      >
+        <option value="">Selecciona un estado</option>
+        <option *ngFor="let state of mexicoStates" [value]="state">{{ state }}</option>
+      </select>
+
+      <label for="bio">Biografía</label>
+      <textarea id="bio" name="bio" rows="4" [(ngModel)]="editableProfile.bio"></textarea>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+        <button type="button" (click)="cancelEditProfile()" class="save-profile-btn" style="margin-top:0; background:#6b7280;">
+          Cancelar
+        </button>
+        <button type="submit" class="save-profile-btn" [disabled]="isSavingProfile()" style="margin-top:0;">
+          {{ isSavingProfile() ? 'Guardando...' : 'Guardar perfil' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,63 +1,97 @@
-<div class="welcome-container">
-  <div class="welcome-left">
-    <div class="logo">
-      <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="50" height="50" rx="12" fill="white"/>
-        <path d="M25 15C19.477 15 15 19.477 15 25C15 30.523 19.477 35 25 35C30.523 35 35 30.523 35 25C35 19.477 30.523 15 25 15ZM25 32C20.589 32 17 28.411 17 25C17 21.589 20.589 18 25 18C29.411 18 33 21.589 33 25C33 28.411 29.411 32 25 32Z" fill="#8B5CF6"/>
-        <path d="M26 22H24V26H20V28H24V32H26V28H30V26H26V22Z" fill="#8B5CF6"/>
-      </svg>
-      <span>Staffy</span>
-    </div>
-
-    <div class="welcome-content">
-      <h1>Start your volunteering journey</h1>
-      <p>Join our community of passionate volunteers. Whether you're looking to give back, learn new skills, or meet like-minded people, Staffy has opportunities for everyone.</p>
-
-      <div class="features">
-        <div class="feature">
-          <div class="check-icon">✓</div>
-          <div>
-            <h3>Flexible Scheduling</h3>
-            <p>Choose shifts that fit your lifestyle</p>
-          </div>
-        </div>
-
-        <div class="feature">
-          <div class="check-icon">✓</div>
-          <div>
-            <h3>Track Your Impact</h3>
-            <p>See the difference you're making</p>
-          </div>
-        </div>
-
-        <div class="feature">
-          <div class="check-icon">✓</div>
-          <div>
-            <h3>Connect with Community</h3>
-            <p>Meet passionate volunteers like you</p>
-          </div>
-        </div>
+<div class="welcome-page">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Find Your Next Volunteering Opportunity</h1>
+      <p>Make a difference in your community. Browse opportunities that match your passion and availability.</p>
+      
+      <div class="search-bar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" placeholder="Search by title, organization, or location..." [(ngModel)]="searchQuery">
       </div>
     </div>
+  </section>
 
-    <footer class="welcome-footer">
-      <p>© 2026 Staffy. Empowering communities through volunteering.</p>
-    </footer>
-  </div>
-
-  <div class="welcome-right">
-    <div class="buttons-container">
-      <h2>Get Started</h2>
-      <p>Choose an option to continue</p>
-
-      <div class="button-group">
-        <button class="btn btn-primary" [routerLink]="['/sign-in']">
-          Sign In
-        </button>
-        <button class="btn btn-secondary" [routerLink]="['/sign-up']">
-          Create Account
+  <!-- Main Content -->
+  <div class="opportunities-container">
+    <!-- Categories Section (Top) -->
+    <div class="categories-section-top">
+      <div class="categories-header">
+        <i class="fas fa-filter"></i>
+        <h2>Categories</h2>
+      </div>
+      <div class="category-tags">
+        <button 
+          *ngFor="let category of categories" 
+          class="category-tag"
+          [class.active]="selectedCategory() === category"
+          (click)="selectCategory(category)">
+          {{ category }}
         </button>
       </div>
     </div>
+
+    <!-- Sidebar (Desktop) -->
+    <aside class="sidebar"></aside>
+
+    <!-- Opportunities Grid -->
+    <section class="opportunities-main">
+      <div class="opportunities-header">
+        <p>Showing {{ opportunities.length }} opportunities</p>
+        <select class="sort-select">
+          <option>Recommended</option>
+          <option>Recently Added</option>
+          <option>Closest to Me</option>
+        </select>
+      </div>
+
+      <!-- Opportunities Grid -->
+      <div class="opportunities-grid">
+        <div *ngFor="let opp of opportunities" class="opportunity-card">
+          <div class="card-image">
+            <img [src]="opp.image" [alt]="opp.title">
+            <span *ngIf="opp.urgent" class="urgent-badge">Urgent</span>
+            <button class="favorite-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="card-content">
+            <h3>{{ opp.title }}</h3>
+            <p class="organization">{{ opp.organization }}</p>
+            
+            <div class="card-info">
+              <div class="info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                {{ opp.location }}
+              </div>
+              
+              <div class="info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                {{ opp.date }}
+              </div>
+              
+              <div class="info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 11H3v2h6v-2zm0-4H3v2h6V7zm6 0v2h6V7h-6zm0 4v2h6v-2h-6zM9 3H3v2h6V3zm6 0v2h6V3h-6z"/>
+                </svg>
+                {{ opp.hours }}
+              </div>
+            </div>
+            
+            <button class="apply-btn">Apply Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
+

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -19,6 +20,11 @@ export class SignUpComponent {
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
 
+  constructor(
+    private readonly http: HttpClient,
+    private readonly router: Router,
+  ) {}
+
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
@@ -29,19 +35,37 @@ export class SignUpComponent {
 
   onSubmit() {
     if (!this.agreeToTerms) {
-      alert('Please agree to the Terms of Service and Privacy Policy');
+      alert('Debes aceptar los Términos del servicio y la Política de privacidad.');
       return;
     }
 
     if (this.password !== this.confirmPassword) {
-      alert('Passwords do not match');
+      alert('Las contraseñas no coinciden.');
       return;
     }
 
-    console.log('Sign up:', {
-      fullName: this.fullName,
-      email: this.email,
-      password: this.password
-    });
+    this.http
+      .post<{ id: number; fullName: string; email: string; role: string }>('/api/auth/sign-up', {
+        fullName: this.fullName,
+        email: this.email,
+        password: this.password,
+      })
+      .subscribe({
+        next: (response) => {
+          localStorage.setItem('staffy_session', 'active');
+          localStorage.setItem('staffy_user_id', String(response.id));
+          localStorage.setItem('staffy_role', response.role);
+          localStorage.setItem('staffy_user_name', response.fullName);
+          localStorage.setItem('staffy_user_email', response.email);
+          alert('Cuenta creada con éxito.');
+          this.router.navigate(['/profile']);
+        },
+        error: (error) => {
+          const message =
+            error?.error?.message ||
+            'No pudimos crear tu cuenta en este momento. Inténtalo de nuevo.';
+          alert(message);
+        },
+      });
   }
 }
